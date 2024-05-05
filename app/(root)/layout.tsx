@@ -1,6 +1,10 @@
+//这个是为了在root里面有header和footer
+
 import type { Metadata } from "next";
-import { Inter, Poppins } from "next/font/google";
-import "./globals.css";
+import { Poppins } from "next/font/google";
+
+import Header from "@/components/reusable/Header";
+import Footer from "@/components/reusable/Footer";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -23,8 +27,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={poppins.variable}>{children}</body>
-    </html>
+    <div className="flex h-screen flex-col">
+      <Header />
+      <main className="flex-1">{children}</main>
+      <Footer />
+    </div>
   );
 }
