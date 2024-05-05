@@ -19,7 +19,7 @@ const Header = () => {
         </Link>
         {/* show when large devices */}
         <SignedIn>
-          <nav className="md:flex-between hidden w-full max-w-xs">
+          <nav className="md:flex hidden w-full max-w-xs">
             <NavItems />
           </nav>
         </SignedIn>

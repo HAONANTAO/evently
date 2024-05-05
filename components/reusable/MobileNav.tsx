@@ -11,39 +11,34 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-
+import Image from "next/image";
+import { Separator } from "@/components/ui/separator";
+import NavItems from "./NavItems";
 export function MobileNav() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline">Open</Button>
+        <Button variant="outline" className="" size="sm">
+          <Image
+            src="/assets/icons/menu.svg"
+            alt="menu"
+            width="24"
+            height="24"
+            className="cursor-pointer"
+          />
+        </Button>
       </SheetTrigger>
-      <SheetContent>
-        <SheetHeader>
-          <SheetTitle>Edit profile</SheetTitle>
-          <SheetDescription>
-            Make changes to your profile here. Click save when you're done.
-          </SheetDescription>
-        </SheetHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Name
-            </Label>
-            <Input id="name" value="Pedro Duarte" className="col-span-3" />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              Username
-            </Label>
-            <Input id="username" value="@peduarte" className="col-span-3" />
-          </div>
-        </div>
-        <SheetFooter>
-          <SheetClose asChild>
-            <Button type="submit">Save changes</Button>
-          </SheetClose>
-        </SheetFooter>
+      <SheetContent className="bg-white">
+        <Image
+          src="/assets/images/logo.svg"
+          alt="logo"
+          width="145"
+          height="30"
+          className="py-4"
+        />
+        <Separator className="border border-gray-500 " />
+
+        <NavItems />
       </SheetContent>
     </Sheet>
   );
