@@ -4,42 +4,32 @@ import { clerkClient, WebhookEvent } from "@clerk/nextjs/server";
 import { createUser, deleteUser, updateUser } from "@/lib/actions/user.actions";
 
 import { NextResponse } from "next/server";
-
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
 
-  // Log the WEBHOOK_SECRET to verify it's being loaded correctly
-  console.log("WEBHOOK_SECRET:", WEBHOOK_SECRET);
-
   if (!WEBHOOK_SECRET) {
-    console.error("WEBHOOK_SECRET is missing");
     throw new Error(
       "Please add WEBHOOK_SECRET from Clerk Dashboard to .env or .env.local",
     );
   }
 
-  // Get and log the headers
+  // Get the headers
   const headerPayload = headers();
   const svix_id = headerPayload.get("svix-id");
   const svix_timestamp = headerPayload.get("svix-timestamp");
   const svix_signature = headerPayload.get("svix-signature");
 
-  console.log("Received headers:", { svix_id, svix_timestamp, svix_signature });
-
   // If there are no headers, error out
   if (!svix_id || !svix_timestamp || !svix_signature) {
-    console.error("Missing one or more Svix headers");
     return new Response("Error occured -- no svix headers", {
       status: 400,
     });
   }
 
-  // Get and log the body
+  // Get the body
   const payload = await req.json();
   const body = JSON.stringify(payload);
-
-  console.log("Received body:", body);
 
   // Create a new Svix instance with your secret.
   const wh = new Webhook(WEBHOOK_SECRET);
@@ -53,7 +43,6 @@ export async function POST(req: Request) {
       "svix-timestamp": svix_timestamp,
       "svix-signature": svix_signature,
     }) as WebhookEvent;
-    console.log("Webhook verified successfully", evt);
   } catch (err) {
     console.error("Error verifying webhook:", err);
     return new Response("Error occured", {
@@ -61,11 +50,9 @@ export async function POST(req: Request) {
     });
   }
 
-  // Process the event
+  // Get the ID and type
   const { id } = evt.data;
   const eventType = evt.type;
-
-  console.log("Processing event:", { eventType, id });
 
   if (eventType === "user.created") {
     const { id, email_addresses, image_url, first_name, last_name, username } =
@@ -80,19 +67,14 @@ export async function POST(req: Request) {
       photo: image_url,
     };
 
-    console.log("Creating user:", user);
-
     const newUser = await createUser(user);
 
     if (newUser) {
-      console.log("User created successfully:", newUser);
       await clerkClient.users.updateUserMetadata(id, {
         publicMetadata: {
           userId: newUser._id,
         },
       });
-    } else {
-      console.error("Failed to create user");
     }
 
     return NextResponse.json({ message: "OK", user: newUser });
@@ -108,15 +90,7 @@ export async function POST(req: Request) {
       photo: image_url,
     };
 
-    console.log("Updating user:", user);
-
     const updatedUser = await updateUser(id, user);
-
-    if (updatedUser) {
-      console.log("User updated successfully:", updatedUser);
-    } else {
-      console.error("Failed to update user");
-    }
 
     return NextResponse.json({ message: "OK", user: updatedUser });
   }
@@ -124,19 +98,10 @@ export async function POST(req: Request) {
   if (eventType === "user.deleted") {
     const { id } = evt.data;
 
-    console.log("Deleting user with ID:", id);
-
     const deletedUser = await deleteUser(id!);
-
-    if (deletedUser) {
-      console.log("User deleted successfully:", deletedUser);
-    } else {
-      console.error("Failed to delete user");
-    }
 
     return NextResponse.json({ message: "OK", user: deletedUser });
   }
 
-  console.error("Unhandled event type:", eventType);
-  return new Response("Unhandled event type", { status: 400 });
+  return new Response("", { status: 200 });
 }
