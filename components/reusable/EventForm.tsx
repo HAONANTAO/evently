@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import "react-datepicker/dist/react-datepicker.css";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useUploadThing } from "@/lib/uploadthing";
+
 import {
   Form,
   FormControl,
@@ -24,8 +25,10 @@ import { eventDefaultValues } from "@/data";
 import Dropdown from "./Dropdown";
 import { Textarea } from "../ui/textarea";
 import { FileUploader } from "./FileUploader";
-import { create } from "domain";
+
 import { useRouter } from "next/navigation";
+import { createEvent } from "@/lib/actions/event.actions";
+
 interface EventFormProps {
   userId: string;
   type: "Create" | "Update";
@@ -59,17 +62,18 @@ const EventForm = ({ userId, type }: EventFormProps) => {
 
       if (type === "Create") {
         try {
-          //magic logic
-          // const newEvent = await createEvent({
-          //   event: { ...values, imageUrl: uploadedImageUrl },
-          //   userId,
-          //   path: "/profile",
-          // });
-          // if (newEvent) {
-          //   form.reset();
-          //   // router push to the new event
-          //   router.push(`/events/${newEvent._id}`);
-          // }
+          // magic logic
+          const newEvent = await createEvent({
+            event: { ...values, imageUrl: uploadedImageUrl },
+            userId,
+            path: "/profile",
+          });
+          if (newEvent) {
+            console.log(newEvent);
+            form.reset();
+          //  router push to the new event
+            router.push(`/events/${newEvent._id}`);
+          }
         } catch (error) {
           console.log(error);
         }
@@ -117,13 +121,12 @@ const EventForm = ({ userId, type }: EventFormProps) => {
             )}
           />
         </div>
-        <div className="flex flex-col gap-5 md:flex-row">
-          {" "}
+        <div className="flex flex-col gap-5 md:flex-row ">
           <FormField
             control={form.control}
             name="description"
             render={({ field }) => (
-              <FormItem className="w-full">
+              <FormItem className="w-full rounded-full">
                 <FormLabel>Description</FormLabel>
                 <FormControl className="h-72">
                   <Textarea
@@ -141,6 +144,7 @@ const EventForm = ({ userId, type }: EventFormProps) => {
             name="imageUrl"
             render={({ field }) => (
               <FormItem className="w-full">
+                 <FormLabel>Uploading</FormLabel>
                 <FormControl className="h-72">
                   <FileUploader
                     onFieldChange={field.onChange}
@@ -153,7 +157,7 @@ const EventForm = ({ userId, type }: EventFormProps) => {
             )}
           />
         </div>
-        <div className="flex flex-col gap-5 md:flex-row">
+        <div className="flex flex-col gap-5 md:flex-row ">
           <FormField
             control={form.control}
             name="location"
