@@ -7,6 +7,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ICategory } from "../../lib/database/models/category.model";
+import { useEffect } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,6 +20,10 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Input } from "../ui/input";
+import {
+  createCategory,
+  getAllCategories,
+} from "@/lib/actions/category.actions";
 
 type DropdownProps = {
   onChangeHandler?: () => void;
@@ -29,8 +34,23 @@ const Dropdown = ({ onChangeHandler, value }: DropdownProps) => {
   // dynamic set of my category
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [newCategory, setNewCategory] = useState("");
-  const handleAddCategory = () => {};
-
+  const handleAddCategory = () => {
+    createCategory({
+      // create
+      categoryName: newCategory.trim(),
+    }).then((category) => {
+      // push
+      setCategories((prevState) => [...prevState, category]);
+    });
+  };
+  useEffect(() => {
+    const getCategories = async () => {
+      const categoryList = await getAllCategories();
+      // if have categories, set categories
+      categoryList && setCategories(categoryList as ICategory[]);
+    };
+    getCategories();
+  }, [categories]);
   return (
     <Select onValueChange={onChangeHandler} defaultValue={value}>
       {/* style the field */}
@@ -49,7 +69,7 @@ const Dropdown = ({ onChangeHandler, value }: DropdownProps) => {
           ))}
         <AlertDialog>
           <AlertDialogTrigger className="p-medium-14 flex w-full rounded-sm py-3 pl-8 text-primary-500 hover:bg-primary-50 focus:text-primary-500 ">
-            Open
+            Add new category
           </AlertDialogTrigger>
           <AlertDialogContent className="bg-white">
             <AlertDialogHeader>
@@ -59,7 +79,6 @@ const Dropdown = ({ onChangeHandler, value }: DropdownProps) => {
                   type="text"
                   placeholder="Category Name"
                   className="input-field mt-3"
-                
                   onChange={(e) => setNewCategory(e.target.value)}
                 />
               </AlertDialogDescription>
