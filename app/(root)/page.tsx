@@ -47,7 +47,7 @@ export default async function Home() {
         <div className="flex w-full flex-col gap-5 md:flex-row">
           Search CategoryFilter
           <Collection
-            data={[]}
+            data={events?.data}
             emptyTitle="No Events Found"
             emptyStateSubtext="Come back later"
             collectionType="All_Events"
