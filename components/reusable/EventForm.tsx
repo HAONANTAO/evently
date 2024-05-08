@@ -8,6 +8,7 @@ import DatePicker from "react-datepicker";
 import { Button } from "@/components/ui/button";
 import "react-datepicker/dist/react-datepicker.css";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useUploadThing } from "@/lib/uploadthing";
 import {
   Form,
   FormControl,
@@ -23,6 +24,8 @@ import { eventDefaultValues } from "@/data";
 import Dropdown from "./Dropdown";
 import { Textarea } from "../ui/textarea";
 import { FileUploader } from "./FileUploader";
+import { create } from "domain";
+import { useRouter } from "next/navigation";
 interface EventFormProps {
   userId: string;
   type: "Create" | "Update";
@@ -33,6 +36,8 @@ interface EventFormProps {
 // };
 const EventForm = ({ userId, type }: EventFormProps) => {
   const [files, setFiles] = useState<File[]>([]);
+  const router = useRouter();
+  const { startUpload } = useUploadThing("imageUploader");
   //date picker
   const [startDate, setStartDate] = useState(new Date());
   // const initialValues =eventDefaultValues;
@@ -42,10 +47,34 @@ const EventForm = ({ userId, type }: EventFormProps) => {
     defaultValues: eventDefaultValues,
   });
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof eventFormSchema>) {
+  async function onSubmit(values: z.infer<typeof eventFormSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    console.log(values);
+    const eventData = values;
+    let uploadedImageUrl = values.imageUrl;
+    if (files.length > 0) {
+      const uploadedImages = await startUpload(files);
+      if (!uploadedImages) return;
+      uploadedImageUrl = uploadedImages[0].url;
+
+      if (type === "Create") {
+        try {
+          //magic logic
+          // const newEvent = await createEvent({
+          //   event: { ...values, imageUrl: uploadedImageUrl },
+          //   userId,
+          //   path: "/profile",
+          // });
+          // if (newEvent) {
+          //   form.reset();
+          //   // router push to the new event
+          //   router.push(`/events/${newEvent._id}`);
+          // }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    }
   }
 
   return (
@@ -250,10 +279,12 @@ const EventForm = ({ userId, type }: EventFormProps) => {
                                 className="whitespace-nowrap pr-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                                 Free Ticket
                               </label>
-                               <Checkbox
-                                  onCheckedChange={field.onChange}
-                                  checked={field.value}
-                                id="isFree" className="mr-2 h-5 w-5 border-2 border-primary-500" />
+                              <Checkbox
+                                onCheckedChange={field.onChange}
+                                checked={field.value}
+                                id="isFree"
+                                className="mr-2 h-5 w-5 border-2 border-primary-500"
+                              />
                             </div>
                           </FormControl>
                           <FormMessage />
