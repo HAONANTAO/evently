@@ -50,7 +50,7 @@ const Dropdown = ({ onChangeHandler, value }: DropdownProps) => {
       categoryList && setCategories(categoryList as ICategory[]);
     };
     getCategories();
-  }, [categories]);
+  }, []);
   return (
     <Select onValueChange={onChangeHandler} defaultValue={value}>
       {/* style the field */}
