@@ -28,26 +28,30 @@ import { FileUploader } from "./FileUploader";
 
 import { useRouter } from "next/navigation";
 import { createEvent } from "@/lib/actions/event.actions";
+import { IEvent } from "@/lib/database/models/event.model";
 
 interface EventFormProps {
   userId: string;
   type: "Create" | "Update";
+  event?: IEvent;
+  eventId?: string;
 }
 // type EventFormProps = {
 //   userId: string;
 //   type: "Create" | " Update";
 // };
-const EventForm = ({ userId, type }: EventFormProps) => {
+const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
   const [files, setFiles] = useState<File[]>([]);
   const router = useRouter();
   const { startUpload } = useUploadThing("imageUploader");
   //date picker
   const [startDate, setStartDate] = useState(new Date());
-  // const initialValues =eventDefaultValues;
+  // check if this is 
+  const initialValues = event && type === "Update" ? event : eventDefaultValues;
   // 1. Define your form.
   const form = useForm<z.infer<typeof eventFormSchema>>({
     resolver: zodResolver(eventFormSchema),
-    defaultValues: eventDefaultValues,
+    defaultValues: initialValues,
   });
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof eventFormSchema>) {
@@ -71,7 +75,7 @@ const EventForm = ({ userId, type }: EventFormProps) => {
           if (newEvent) {
             console.log(newEvent);
             form.reset();
-          //  router push to the new event
+            //  router push to the new event
             router.push(`/events/${newEvent._id}`);
           }
         } catch (error) {
@@ -144,7 +148,7 @@ const EventForm = ({ userId, type }: EventFormProps) => {
             name="imageUrl"
             render={({ field }) => (
               <FormItem className="w-full">
-                 <FormLabel>Uploading</FormLabel>
+                <FormLabel>Uploading</FormLabel>
                 <FormControl className="h-72">
                   <FileUploader
                     onFieldChange={field.onChange}
