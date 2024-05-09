@@ -38,3 +38,4 @@ export const checkoutOrder = async (order: CheckoutOrderParams) => {
       throw error
   }
 }
+
