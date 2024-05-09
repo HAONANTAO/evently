@@ -19,7 +19,7 @@ const Card = ({ event, hasOrderLink, hideprice }: CardProps) => {
   const isEventCreator = userId === event.organizer._id.toString();
 
   return (
-    <div className="group relative flex min-h-[380px] w-full max-w-[400px] flex-col overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-lg md:min-h-[438px]">
+    <div className="group relative flex min-h-[380px] w-full max-w-[400px] flex-col overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-lg md:min-h-[438px] ">
       {/* card images */}
       <Link
         href={`/events/${event._id}`}
@@ -29,7 +29,7 @@ const Card = ({ event, hasOrderLink, hideprice }: CardProps) => {
       {/* am i the event creator? */}
       {isEventCreator && !hideprice && (
         // edit click
-        <div className="absolute right-2 top-2 flex flex-col gfap-2 rounded-xl bg-white p-3 shadow-sm transition-all">
+        <div className="absolute right-2 top-2 flex flex-col gap-2 rounded-xl bg-white p-3 shadow-sm transition-all ">
           <Link href={`/events/${event._id}/update`}>
             <Image
               src="/assets/icons/edit.svg"
@@ -44,7 +44,7 @@ const Card = ({ event, hasOrderLink, hideprice }: CardProps) => {
       <Link
         href={`/events/${event._id}`}
         className="flex min-h-[230px] flex-col gap-3 p-5 md:gap-4">
-        {/* not my tickets then shows tall informations */}
+        {/* not my tickets then shows all informations */}
         {!hideprice && (
           <div className="flex gap-2">
             {/* prices of event shows */}
@@ -52,7 +52,7 @@ const Card = ({ event, hasOrderLink, hideprice }: CardProps) => {
               {event.isFree ? "Free" : `${event.price}`}
             </span>
             {/* category  */}
-            <p className="p-semibold-14 w-min rounded-full bg-grey-500/10 px-4 py-1 text-grey-500">
+            <p className="p-semibold-14 w-min rounded-full bg-grey-500/10 px-4 py-1 text-grey-500 line-clamp-1">
               {event.category.name}
             </p>
           </div>
