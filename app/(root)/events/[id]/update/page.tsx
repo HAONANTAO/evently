@@ -10,11 +10,11 @@ type UpdateEventProps = {
   };
 };
 const UpdateEvent = async ({ params: { id } }: UpdateEventProps) => {
-  const event = await getEventById(id);
+  
   const { sessionClaims } = auth();
   // who
   const userId = sessionClaims?.userId as string;
-
+  const event = await getEventById(id);
   return (
     <>
       <section className="bg-primary-50 bg-dotted-pattern bg-cover bg-center py-5 md:py-10">

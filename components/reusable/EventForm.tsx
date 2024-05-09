@@ -27,7 +27,7 @@ import { Textarea } from "../ui/textarea";
 import { FileUploader } from "./FileUploader";
 
 import { useRouter } from "next/navigation";
-import { createEvent } from "@/lib/actions/event.actions";
+import { createEvent, updateEvent } from "@/lib/actions/event.actions";
 import { IEvent } from "@/lib/database/models/event.model";
 
 interface EventFormProps {
@@ -46,8 +46,15 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
   const { startUpload } = useUploadThing("imageUploader");
   //date picker
   const [startDate, setStartDate] = useState(new Date());
-  // check if this is 
-  const initialValues = event && type === "Update" ? event : eventDefaultValues;
+  // check if this is
+  const initialValues =
+    event && type === "Update"
+      ? {
+          ...event,
+          startDateTime: new Date(event.startDateTime),
+          endDateTime: new Date(event.endDateTime),
+        }
+      : eventDefaultValues;
   // 1. Define your form.
   const form = useForm<z.infer<typeof eventFormSchema>>({
     resolver: zodResolver(eventFormSchema),
@@ -65,6 +72,7 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
       uploadedImageUrl = uploadedImages[0].url;
 
       if (type === "Create") {
+       
         try {
           // magic logic
           const newEvent = await createEvent({
@@ -77,6 +85,32 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
             form.reset();
             //  router push to the new event
             router.push(`/events/${newEvent._id}`);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+      // update events
+      if (type === "Update") {
+        console.log("update");
+        if (!eventId) {
+          // no event then go back
+          router.back();
+          return;
+        }
+        try {
+          // update event
+          const updatedEvent = await updateEvent({
+            userId,
+            event: { ...values, imageUrl: uploadedImageUrl, _id: eventId },
+            path: "/events/${eventId}",
+          });
+          if (updatedEvent) {
+            console.log(updatedEvent);
+            form.reset();
+            //  router push to the new event
+            router.push(`/events/${updatedEvent._id}`);
           }
         } catch (error) {
           console.log(error);
