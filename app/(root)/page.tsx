@@ -54,15 +54,15 @@ export default async function Home({searchParams}:SearchParamProps) {
         <div className="flex w-full flex-col gap-5 md:flex-row">
           <Search/> <CategoryFilter/>
             </div>
-          <Collection
-            data={events?.data}
-            emptyTitle="No Events Found"
-            emptyStateSubtext="Come back later"
-            collectionType="All_Events"
-            limit={6}
-            page={1}
-            totalPages={2}
-          />
+        <Collection 
+          data={events?.data}
+          emptyTitle="No Events Found"
+          emptyStateSubtext="Come back later"
+          collectionType="All_Events"
+          limit={6}
+          page={page}
+          totalPages={events?.totalPages}
+        />
       
       </section>
     </>
