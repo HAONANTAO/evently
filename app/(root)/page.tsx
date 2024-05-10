@@ -5,7 +5,9 @@ import Collection from "@/components/reusable/Collection";
 import { getAllEvents } from "@/lib/actions/event.actions";
 import Search from "@/components/reusable/Search";
 import { SearchParamProps } from "@/types";
+import CategoryFilter from "@/components/reusable/CategoryFilter";
 export default async function Home({searchParams}:SearchParamProps) {
+  // get search infor to fetch
   const page = Number(searchParams?.page)||1;
   const searchText = (searchParams?.query as string) || ""
   const category = (searchParams?.category as string) || "";
@@ -50,7 +52,7 @@ export default async function Home({searchParams}:SearchParamProps) {
           Trust by <br /> Thousands of Events
         </h2>
         <div className="flex w-full flex-col gap-5 md:flex-row">
-          <Search/> CategoryFilter
+          <Search/> <CategoryFilter/>
             </div>
           <Collection
             data={events?.data}
