@@ -65,7 +65,7 @@ Ensure a well-structured codebase for easy maintenance and scalability, promotin
 
 <p align="center">
   <a href="https://github.com/shaojintian/Best_README_template/">
-    <img src="images/Web.png" alt="Logo" width="80" height="80">
+    <img src="Web.png" alt="Logo" width="80" height="80">
   </a>
 
 
