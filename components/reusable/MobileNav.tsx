@@ -14,6 +14,7 @@ import {
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
 import NavItems from "./NavItems";
+import Link from "next/link";
 export function MobileNav() {
   return (
     <Sheet>
@@ -39,6 +40,21 @@ export function MobileNav() {
         <Separator className="border border-gray-500 " />
 
         <NavItems />
+      
+          {/* text with button */}
+          <div className="flex flex-col justify-center gap-8">
+            <h1 className="h1-bold">
+              Host, Connect, Celebrate: Your Events, Our Platform!
+            </h1>
+            <p className="p-regular-20 md:p-regular-24">
+              Book and learn helpful tips from 3,168+ mentors in world-class
+              companies with our global community.
+            </p>
+           
+          <Button size="lg" asChild className="button w-full sm:w-fit">
+              <Link href="/">Explore Now</Link>
+            </Button>
+          </div>
       </SheetContent>
     </Sheet>
   );
