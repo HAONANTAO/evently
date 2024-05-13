@@ -263,6 +263,7 @@ Vercel (Serverless)
 - TypeScript
 - TailwindCSS
 - Stripe
+- clerk
 - Zod
 - React Hook Form
 - Shadcn
